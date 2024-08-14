@@ -4,7 +4,7 @@ This project uses the [Spotify Web API](https://developer.spotify.com/documentat
 
 # Prerequisites
 
-- Mongo DB >= v6
+- MongoDB >= v6
 - NodeJS >= v18.3.1
 - npm >= v10.8.2
 - Brew >= v4.3.9 (if MacOS)
