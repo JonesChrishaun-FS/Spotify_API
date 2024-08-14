@@ -20,7 +20,6 @@ npm install
 or
 
 npm i
-
 ```
 
 After npm has finished installing all of your node_modules you can now run the project. You will need to open two different terminals. One for the frontend app and one for backend Express application.
