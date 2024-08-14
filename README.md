@@ -12,4 +12,12 @@ This project uses the [Spotify Web API](https://developer.spotify.com/documentat
 
 # Getting Started
 
+### To Run Express (backend)
+
+```
+npm run dev
+```
+
 # Links
+
+- http://localhost:8000 - Link to the backend (Express) API.
