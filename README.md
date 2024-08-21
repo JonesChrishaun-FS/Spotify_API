@@ -33,5 +33,3 @@ npm run dev
 # Links
 
 - http://localhost:8000 - Link to the backend (Express) API.
-
-- http://localhost:8000/spot/v1/staus - Endpoint to check the status of the application's JWT. Return true if JWT exists valid. Otherwise false.
