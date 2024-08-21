@@ -12,7 +12,7 @@ This project uses the [Spotify Web API](https://developer.spotify.com/documentat
 
 # Getting Started
 
-In order to setup the project we will need to setup our `.env` file. Place all of your environment variables inside, then save. After you have done so install all of your `node_modules` using the following command.
+In order to setup the project we will need to setup our `.env` file by using the `.env.dist` and renaming to `.env`. Place all of your environment variables inside, then save. After you have done so install all of your `node_modules` using the following command.
 
 ```
 npm install
@@ -33,3 +33,5 @@ npm run dev
 # Links
 
 - http://localhost:8000 - Link to the backend (Express) API.
+
+- http://localhost:8000/spot/v1/staus - Endpoint to check the status of the application's JWT. Return true if JWT exists valid. Otherwise false.
