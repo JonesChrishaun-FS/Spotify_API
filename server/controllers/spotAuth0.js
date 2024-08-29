@@ -53,7 +53,7 @@ const jwt = async (req, res, next) => {
       req.token
     );
   }
-  if (!req.token) {
+  if (!req.toke) {
     res.json({ error: "Could not be requested..." });
   }
   return next();
