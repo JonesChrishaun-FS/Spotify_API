@@ -1,52 +1,75 @@
-const { SPOT_CLIENT_ID, SPOT_CLIENT_SECRET, REDIRECT_URI } = process.env;
-passport = require("passport");
+const SPOT_CLIENT_ID = process.env.SPOT_CLIENT_ID;
+const SPOT_CLIENT_SECRET = process.env.SPOT_CLIENT_SECRET;
+const { Token } = require("../models/SpotifyToken");
 const axios = require("axios");
+const timestamp = new Date().getTime();
 
-const redirect_uri = REDIRECT_URI;
+redirect_uri = process.env.REDIRECT_URI;
 
-const jwt = async (req, res, next) => {
-  passport.authenticate("spotify", (err, data, info) => {
-    if (err) {
-      return next(err);
-    }
-    if (!data) {
-      return res.redirect("/");
-    }
+const getToken = async (code, grant_type, token) => {
+  const data =
+    grant_type === "refresh_token"
+      ? querystring.stringify({ refresh_token: code, grant_type })
+      : querystring.stringify({ code, grant_type, redirect_uri });
 
-    res.redirect("/?token=" + data.token);
-  })(req, res, next);
-};
-const auth = () => {
-  const code = req.query.code || null;
-  const state = req.query.state || null;
-
-  if (state === null) {
-    res.redirect(
-      "/#" +
-        querystring.stringify({
-          error: "state_mismatch",
-        })
-    );
-  } else {
-    return axios({
-      method: "POST",
-      url: "https://accounts.spotify.com/api/token",
-      form: {
-        code: code,
-        redirect_uri: redirect_uri,
-        grant_type: "authorization_code",
-      },
-      headers: {
-        Authorization: `Basic ${Buffer.from(
-          `${SPOT_CLIENT_ID} : ${SPOT_CLIENT_SECRET}`
-        ).toString("base64")}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      json: true,
-    }).catch((error) => {
+  return axios({
+    method: "POST",
+    url: "https://accounts.spotify.com/api/token",
+    data,
+    headers: {
+      Authorization:
+        "Basic " +
+        new Buffer.from(SPOT_CLIENT_ID + ":" + SPOT_CLIENT_SECRET).toString(
+          "base64"
+        ),
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  })
+    .then(({ data }) => {
+      data.expires_in = new Date().getTime() + data.expires_in;
+      token.update(data);
+      return token.save();
+    })
+    .catch((error) => {
       return false;
     });
+};
+
+const jwt = async (req, res, next) => {
+  req.token = await Token.find();
+  if (!req.token && !req.query.code) {
+    return next();
   }
+  if (!req.token && !req.query.code) {
+    req.token = await getToken(
+      req.query.code,
+      "authorization_code",
+      Token.create({})
+    );
+  } else if (timestamp > req.token.expires_in) {
+    req.token = await getToken(
+      req.token.refresh_token,
+      "refresh_token",
+      req.token
+    );
+  }
+  if (!req.token) {
+    res.json({ error: "Could not be requested..." });
+  }
+  return next();
+};
+
+const authO = async (req, res) => {
+  if (req.token) {
+    return res.redirect(process.env.PORT);
+  } else {
+    return res.redirect(`${process.env.PORT}/login`);
+  }
+};
+
+const status = async (req, res) => {
+  const valid = req.token && req.token.expires_in > now ? true : false;
+  res.json({ valid });
 };
 
 const login = async (req, res) => {
@@ -61,9 +84,9 @@ const login = async (req, res) => {
       })
   );
 };
-
 module.exports = {
   login,
-  auth,
+  status,
   jwt,
+  authO,
 };

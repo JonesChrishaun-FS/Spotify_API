@@ -1,6 +1,10 @@
 const express = require("express");
-const spotify = express.Router;
-const spotifyCtrl = require("../controllers/spotAuth0");
+const spot = express.Router();
+const spotCtrl = require("../controllers/spotAuth0");
 
-spotify.get("/login", spotifyCtrl.login);
-spotify.get("/auth", spotifyCtrl.jwt, spotifyCtrl.auth);
+spot.get("/login", spotCtrl.login);
+spot.get("/authO", spotCtrl.jwt, spotCtrl.authO);
+spot.get("/token", spotCtrl.jwt, spotCtrl.status);
+spot.get("/status", spotCtrl.jwt, spotCtrl.status);
+
+module.exports = spot;
