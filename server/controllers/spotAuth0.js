@@ -3,8 +3,10 @@ const SPOT_CLIENT_SECRET = process.env.SPOT_CLIENT_SECRET;
 const { Token } = require("../models/SpotifyToken");
 const axios = require("axios");
 const timestamp = new Date().getTime();
+const randomstring = require("randomstring");
+const querystring = require("node:querystring");
 
-redirect_uri = process.env.REDIRECT_URI;
+const redirect_uri = process.env.REDIRECT_URI;
 
 const getToken = async (code, grant_type, token) => {
   const data =
@@ -36,16 +38,12 @@ const getToken = async (code, grant_type, token) => {
 };
 
 const jwt = async (req, res, next) => {
-  req.token = await Token.find();
+  req.token = await Token;
   if (!req.token && !req.query.code) {
     return next();
   }
-  if (!req.token && !req.query.code) {
-    req.token = await getToken(
-      req.query.code,
-      "authorization_code",
-      Token.create({})
-    );
+  if (!req.token && req.query.code) {
+    req.token = await getToken(req.query.code, "authorization_code", Token);
   } else if (timestamp > req.token.expires_in) {
     req.token = await getToken(
       req.token.refresh_token,
@@ -53,27 +51,27 @@ const jwt = async (req, res, next) => {
       req.token
     );
   }
-  if (!req.toke) {
+  if (!req.token) {
     res.json({ error: "Could not be requested..." });
   }
   return next();
 };
 
-const authO = async (req, res) => {
+const auth = async (req, res) => {
   if (req.token) {
-    return res.redirect(process.env.PORT);
+    res.redirect("http://localhost:3000");
   } else {
-    return res.redirect(`${process.env.PORT}/login`);
+    res.redirect(`http://localhost:3000/login`);
   }
 };
 
 const status = async (req, res) => {
-  const valid = req.token && req.token.expires_in > now ? true : false;
+  const valid = req.token && req.token.expires_in > timestamp ? true : false;
   res.json({ valid });
 };
 
 const login = async (req, res) => {
-  const state = randomstring.generate(16);
+  const state = randomstring.generate();
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({
@@ -97,9 +95,10 @@ const search = async (req, res) => {
     const user = req.user;
     const accessToken = user.access_token;
 
-    const response = await axios.get("/search", {
+    const response = await axios.get("https://api.spotify.com/spot/v1/search", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
+        ContentType: "application/json",
       },
       params: {
         q: query,
@@ -117,6 +116,6 @@ module.exports = {
   login,
   status,
   jwt,
-  authO,
+  auth,
   search,
 };
