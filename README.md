@@ -27,9 +27,24 @@ After npm has finished installing all of your node_modules you can now run the p
 ### To Run Express (backend)
 
 ```
+cd server
+```
+
+```
 npm run dev
+```
+
+### To Run React (frontend)
+
+```
+cd spotify
+```
+
+```
+npm start
 ```
 
 # Links
 
 - http://localhost:8000 - Link to the backend (Express) API.
+- http://localhost:3000 - Link to the frontend (React) API.
