@@ -6,5 +6,6 @@ spot.get("/login", spotCtrl.login);
 spot.get("/authO", spotCtrl.jwt, spotCtrl.authO);
 spot.get("/token", spotCtrl.jwt, spotCtrl.status);
 spot.get("/status", spotCtrl.jwt, spotCtrl.status);
+spot.get("/search", spotCtrl.jwt, spotCtrl.search);
 
 module.exports = spot;

@@ -84,9 +84,39 @@ const login = async (req, res) => {
       })
   );
 };
+
+const search = async (req, res) => {
+  const query = req.query.q;
+  const type = req.query.type || "track"; // Default to searching tracks
+
+  if (!query) {
+    return res.status(400).json({ message: "Search query is required" });
+  }
+
+  try {
+    const user = req.user;
+    const accessToken = user.access_token;
+
+    const response = await axios.get("/search", {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        q: query,
+        type: type,
+      },
+    });
+
+    res.json(response.data);
+  } catch (err) {
+    console.error("Error searching Spotify:", err);
+    res.status(500).json({ message: "Failed to search Spotify" });
+  }
+};
 module.exports = {
   login,
   status,
   jwt,
   authO,
+  search,
 };
