@@ -10,8 +10,7 @@ function App() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const token =
-      urlParams.get("token") || localStorage.getItem("spotifyToken");
-
+      urlParams.get("Token") || localStorage.getItem("spotifyToken");
     if (token) {
       setToken(token);
       localStorage.setItem("spotifyToken", token);

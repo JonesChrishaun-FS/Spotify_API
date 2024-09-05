@@ -61,7 +61,7 @@ const auth = async (req, res) => {
   if (req.token) {
     res.redirect("http://localhost:3000");
   } else {
-    res.redirect(`http://localhost:3000/login`);
+    res.redirect("https://localhost:3000/login");
   }
 };
 
