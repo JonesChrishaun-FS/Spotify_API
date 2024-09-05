@@ -50,18 +50,22 @@ const jwt = async (req, res, next) => {
       "refresh_token",
       req.token
     );
+    console.log(getToken());
   }
   if (!req.token) {
-    res.json({ error: "Could not be requested..." });
+    console.log(req.token);
+    console.log(getToken());
+    console.log(Token);
+    return res.json({ error: "Could not be requested..." });
   }
   return next();
 };
 
 const auth = async (req, res) => {
   if (req.token) {
-    res.redirect("http://localhost:3000");
+    return res.redirect("http://localhost:3000");
   } else {
-    res.redirect("https://localhost:3000/login");
+    return res.redirect(`http://localhost:3000/login`);
   }
 };
 
@@ -71,7 +75,7 @@ const status = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const state = randomstring.generate();
+  const state = randomstring.generate(16);
   res.redirect(
     "https://accounts.spotify.com/authorize?" +
       querystring.stringify({
@@ -92,23 +96,21 @@ const search = async (req, res) => {
   }
 
   try {
-    const user = req.user;
-    const accessToken = user.access_token;
-
-    const response = await axios.get("https://api.spotify.com/spot/v1/search", {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        ContentType: "application/json",
-      },
-      params: {
-        q: query,
-        type: type,
-      },
-    });
-
-    res.json(response.data);
+    await axios
+      .get("https://api.spotify.com/spot/v1/search", {
+        headers: {
+          Authorization: `Bearer ${req.toke.access_token}`,
+          ContentType: "application/json",
+        },
+        params: {
+          q: query,
+          type: type,
+        },
+      })
+      .then(({ data }) => {
+        res.json(data);
+      });
   } catch (err) {
-    console.error("Error searching Spotify:", err);
     res.status(500).json({ message: "Failed to search Spotify" });
   }
 };

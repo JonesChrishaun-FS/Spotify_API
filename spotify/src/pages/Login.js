@@ -15,6 +15,7 @@ const Login = () => {
   };
   const text = {
     marginTop: "150px",
+    textAlign: "center",
   };
   return (
     <div style={text}>
