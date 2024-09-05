@@ -16,6 +16,7 @@ function App() {
       localStorage.setItem("spotifyToken", token);
     }
   }, []);
+
   return <Home>{token ? <SearchBar token={token} /> : <Login />}</Home>;
 }
 

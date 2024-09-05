@@ -23,7 +23,7 @@ const SearchBar = ({ token }) => {
         `http://localhost:8000/spot/v1/search?q=${query}&type=album,artist,track`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: token,
           },
         }
       );
@@ -49,32 +49,73 @@ const SearchBar = ({ token }) => {
     }
   };
 
-  const search = {};
-  const items = {};
-  const result_container = {};
-  const results = {};
-
+  const search = {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: "20px",
+  };
+  const item = {
+    backgroundColor: "#181818",
+    padding: "10px",
+    borderRadius: "8px",
+    textAlign: "center",
+  };
+  const result_container = {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+    gap: "20px",
+  };
+  const results = {
+    marginTop: "40px",
+  };
+  const resultsHeading = {
+    color: "#1db954",
+    marginBottom: "20px",
+    textAlign: "center",
+  };
+  const input = {
+    width: "60%",
+    padding: "10px",
+    marginRight: "10px",
+    borderRadius: " 4px",
+    border: "1px solid #333",
+    backgroundColor: "#333",
+    color: "#e0e0e0",
+    fontSize: "1rem",
+  };
+  const button = {
+    padding: "10px 20px",
+    backgroundColor: "#1db954",
+    color: "#fff",
+    border: "none",
+    borderRadius: "4px",
+    fontSize: "1rem",
+  };
   return (
     <div>
       <div style={search}>
         <input
+          style={input}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search for music..."
         />
-        <button onClick={handleSearch}>Search</button>
+        <button onClick={handleSearch} style={button}>
+          Search
+        </button>
       </div>
 
       {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
 
       {albums.length > 0 && (
         <div style={results}>
-          <h2>Albums</h2>
+          <h2 style={resultsHeading}>Albums</h2>
           <div style={result_container}>
             {albums.map((album) => (
               <a
-                style={items}
+                style={item}
                 href={album.external_urls.spotify}
                 target="_blank"
                 rel="noreferrer"
@@ -93,11 +134,11 @@ const SearchBar = ({ token }) => {
 
       {artists.length > 0 && (
         <div style={results}>
-          <h2>Artists</h2>
+          <h2 style={resultsHeading}>Artists</h2>
           <div style={result_container}>
             {artists.map((artist) => (
               <a
-                style={items}
+                style={item}
                 href={artist.external_urls.spotify}
                 target="_blank"
                 rel="noreferrer"
@@ -113,11 +154,11 @@ const SearchBar = ({ token }) => {
 
       {tracks.length > 0 && (
         <div style={results}>
-          <h2>Tracks</h2>
+          <h2 style={resultsHeading}>Tracks</h2>
           <div style={result_container}>
             {tracks.map((track) => (
               <a
-                style={items}
+                style={item}
                 href={track.external_urls.spotify}
                 target="_blank"
                 rel="noreferrer"
